@@ -22,4 +22,36 @@ export class UserService {
 
         return user;
     }
+
+    async updateUser(user_id: number, updateData: Partial<User>) {
+        const updated = await this.userModel
+            .findOneAndUpdate(
+                { user_id },
+                { ...updateData, updateAt: new Date() },
+                { new: true },
+            )
+            .select("-password");
+
+        if (!updated) throw new NotFoundException(`Không tìm thấy người dùng`);
+        return {
+            message: `Đã cập nhật người dùng thành công`,
+            user: {
+                user_id: updated.user_id,
+            },
+        };
+    }
+
+    // DELETE user by user_id
+    async deleteUser(user_id: number) {
+        const deleted = await this.userModel
+            .findOneAndDelete({ user_id })
+            .select("-password");
+        if (!deleted) throw new NotFoundException(`Không tìm thấy người dùng`);
+        return {
+            message: `Đã xóa người dùng thành công`,
+            user: {
+                user_id: deleted.user_id,
+            },
+        };
+    }
 }
