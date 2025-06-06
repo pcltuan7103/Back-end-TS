@@ -33,7 +33,7 @@ export class AuthService {
             user: {
                 id: user.user_id,
                 name: user.name,
-                email: user.email,
+                avatar_image: user.avatar_image,
             },
         };
     }
@@ -51,11 +51,15 @@ export class AuthService {
 
         const nextId = lastUser?.user_id ? lastUser.user_id + 1 : 1;
 
+        const avatarSeed = `${name}-${Math.floor(Math.random() * 10000)}`;
+        const avatarUrl = `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(avatarSeed)}`;
+
         const newUser = await this.userModel.create({
             user_id: nextId,
             name,
             email,
             password: hashedPassword,
+            avatar_image: avatarUrl,
         });
 
         const payload = { sub: newUser._id, email: newUser.email };
@@ -66,8 +70,6 @@ export class AuthService {
             access_token,
             user: {
                 id: newUser.user_id,
-                name: newUser.name,
-                email: newUser.email,
             },
         };
     }
