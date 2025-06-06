@@ -9,11 +9,13 @@ import { Model } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "src/modules/user/model/user.schema";
+import { Role } from "src/modules/role/model/role.model";
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<User>,
+        @InjectModel(Role.name) private roleModel: Model<Role>,
         private jwtService: JwtService,
     ) {}
 
@@ -46,7 +48,7 @@ export class AuthService {
 
         const lastUser = await this.userModel
             .findOne({})
-            .sort({ customId: -1 })
+            .sort({ user_id: -1 })
             .limit(1);
 
         const nextId = lastUser?.user_id ? lastUser.user_id + 1 : 1;
@@ -54,11 +56,15 @@ export class AuthService {
         const avatarSeed = `${name}-${Math.floor(Math.random() * 10000)}`;
         const avatarUrl = `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(avatarSeed)}`;
 
+        const userRole = await this.roleModel.findOne({ name: "User" });
+        if (!userRole) throw new Error("Vai trò User chưa được khởi tạo");
+
         const newUser = await this.userModel.create({
             user_id: nextId,
             name,
             email,
             password: hashedPassword,
+            role: userRole.role_id,
             avatar_image: avatarUrl,
         });
 
