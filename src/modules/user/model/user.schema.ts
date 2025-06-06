@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
+import { Role } from "src/modules/role/model/role.model";
 
 @Schema({ timestamps: true })
 export class User extends Document {
@@ -21,8 +22,8 @@ export class User extends Document {
     @Prop({ required: true })
     password: string;
 
-    @Prop()
-    role: string;
+    @Prop({ type: Types.ObjectId, ref: Role.name })
+    role: Role;
 
     @Prop()
     avatar_image: string;

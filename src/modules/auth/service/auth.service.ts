@@ -20,13 +20,20 @@ export class AuthService {
     ) {}
 
     async login(email: string, password: string) {
-        const user = await this.userModel.findOne({ email });
+        const user = await this.userModel
+            .findOne({ email })
+            .populate("role")
+            .exec();
         if (!user) throw new UnauthorizedException("Email không tồn tại");
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) throw new UnauthorizedException("Sai mật khẩu");
 
-        const payload = { sub: user._id, email: user.email };
+        const payload = {
+            sub: user._id,
+            email: user.email,
+            role: user.role.name,
+        };
         const access_token = this.jwtService.sign(payload);
 
         return {
@@ -36,6 +43,7 @@ export class AuthService {
                 id: user.user_id,
                 name: user.name,
                 avatar_image: user.avatar_image,
+                role_id: user.role.role_id,
             },
         };
     }
