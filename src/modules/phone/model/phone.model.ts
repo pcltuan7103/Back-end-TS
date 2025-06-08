@@ -34,13 +34,10 @@ export class Phone extends Document {
     @Prop()
     stock: number;
 
-    @Prop()
-    status: boolean;
-
     @Prop({ default: true })
     is_public: boolean;
 
-    @Prop({ required: true })
+    @Prop()
     createAt: Date;
 
     @Prop()
