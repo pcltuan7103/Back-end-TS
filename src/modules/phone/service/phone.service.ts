@@ -8,7 +8,6 @@ import { Phone } from "../model/phone.model";
 export class PhoneService {
     constructor(@InjectModel(Phone.name) private phoneModel: Model<Phone>) {}
 
-    // Tạo mới
     async createPhone(data: Partial<Phone>) {
         const lastPhone = await this.phoneModel
             .findOne()
@@ -17,7 +16,6 @@ export class PhoneService {
         return this.phoneModel.create({ ...data, phone_id: nextId });
     }
 
-    // Lấy danh sách (chỉ hiển thị public)
     async getAllPhones() {
         return this.phoneModel
             .find({ is_public: true })
@@ -25,7 +23,6 @@ export class PhoneService {
             .exec();
     }
 
-    // Lấy theo ID
     async getPhoneById(phone_id: number) {
         const phone = await this.phoneModel.findOne({
             phone_id,
@@ -35,7 +32,6 @@ export class PhoneService {
         return phone;
     }
 
-    // Cập nhật
     async updatePhone(phone_id: number, updateData: Partial<Phone>) {
         const updated = await this.phoneModel.findOneAndUpdate(
             { phone_id, is_public: true },
@@ -52,7 +48,6 @@ export class PhoneService {
         };
     }
 
-    // Xoá mềm (chỉ đổi is_public thành false)
     async softDeletePhone(phone_id: number) {
         const deleted = await this.phoneModel.findOneAndUpdate(
             { phone_id },

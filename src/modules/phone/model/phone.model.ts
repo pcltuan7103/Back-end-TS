@@ -1,4 +1,3 @@
-// phone.schema.ts
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import {
@@ -33,6 +32,12 @@ export class Phone extends Document {
 
     @Prop()
     stock: number;
+
+    @Prop()
+    status: "New" | "Sale" | "Hot";
+
+    @Prop()
+    sale: number;
 
     @Prop({ default: true })
     is_public: boolean;

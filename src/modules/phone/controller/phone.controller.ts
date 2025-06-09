@@ -17,7 +17,7 @@ import { RolesGuard } from "src/guards/roles.guard";
 import { Roles } from "src/decorators/roles.decorator";
 import { CloudinaryService } from "src/services/cloudinary.service";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ActionPhoneParams } from "src/types/phone";
+import { ActionPhoneParams } from "../types/phone.types";
 
 @Controller("phone")
 export class PhoneController {
@@ -72,7 +72,6 @@ export class PhoneController {
                 await this.cloudinaryService.deleteImage(publicId);
             }
 
-            // Upload ảnh mới
             const uploadRes = await this.cloudinaryService.uploadImage(file);
             image_url = uploadRes.secure_url;
         }
